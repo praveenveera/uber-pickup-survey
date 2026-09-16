@@ -171,6 +171,34 @@
     outline-offset: 1px;
   }
   .field-note { color: var(--muted); font-size: 0.82rem; margin-top: 6px; }
+
+  .textarea-wrap { position: relative; }
+  .textarea-wrap textarea { padding-right: 52px; }
+  .mic-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 38px; height: 38px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--ink);
+    font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .mic-btn.listening {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+    animation: mic-pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 45%, transparent); }
+    50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--danger) 0%, transparent); }
+  }
+  .mic-hint { color: var(--muted); font-size: 0.8rem; margin-top: 6px; }
   .error-note { color: var(--danger); font-size: 0.86rem; margin-top: 10px; min-height: 1.2em; }
 
   .other-field { margin-top: 10px; }
@@ -306,7 +334,9 @@
       submitting: "Sending...",
       thankyouTitle: "Thank you!",
       thankyouBody: "Your answers were recorded. If you shared contact details, we may reach out for a short follow-up.",
-      errorSubmit: "Something went wrong sending your answers. Please check your connection and try again."
+      errorSubmit: "Something went wrong sending your answers. Please check your connection and try again.",
+      micHint: "Tap the mic to speak your answer instead of typing.",
+      micDenied: "Microphone permission was denied — you can still type your answer."
     },
     te: {
       brand: "పికప్ కథ",
@@ -359,7 +389,9 @@
       submitting: "పంపుతోంది...",
       thankyouTitle: "ధన్యవాదాలు!",
       thankyouBody: "మీ సమాధానాలు నమోదు చేయబడ్డాయి. మీరు కాంటాక్ట్ వివరాలు ఇచ్చి ఉంటే, ఫాలో-అప్ కోసం మేము సంప్రదించవచ్చు.",
-      errorSubmit: "మీ సమాధానాలను పంపడంలో ఏదో తప్పు జరిగింది. దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
+      errorSubmit: "మీ సమాధానాలను పంపడంలో ఏదో తప్పు జరిగింది. దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
+      micHint: "టైప్ చేయడానికి బదులుగా మీ సమాధానం చెప్పడానికి మైక్‌ని నొక్కండి.",
+      micDenied: "మైక్రోఫోన్ అనుమతి తిరస్కరించబడింది — మీరు ఇప్పటికీ టైప్ చేయవచ్చు."
     },
     hi: {
       brand: "पिकअप कहानी",
@@ -412,7 +444,9 @@
       submitting: "भेजा जा रहा है...",
       thankyouTitle: "धन्यवाद!",
       thankyouBody: "आपके जवाब दर्ज कर लिए गए हैं। अगर आपने संपर्क जानकारी दी है, तो हम फॉलो-अप के लिए संपर्क कर सकते हैं।",
-      errorSubmit: "आपके जवाब भेजने में कुछ गड़बड़ हुई। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
+      errorSubmit: "आपके जवाब भेजने में कुछ गड़बड़ हुई। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।",
+      micHint: "टाइप करने के बजाय बोलकर जवाब देने के लिए माइक दबाएं।",
+      micDenied: "माइक्रोफ़ोन की अनुमति नहीं मिली — आप फिर भी टाइप कर सकते हैं।"
     }
   };
 
@@ -426,6 +460,60 @@
   var state = { lang: "en", index: 0, answers: {}, submitting: false, done: false };
 
   function t(key) { return I18N[state.lang][key] || key; }
+
+  // ---- voice-to-text (Web Speech API; feature-detected, silently absent
+  // on browsers that don't support it, e.g. desktop Firefox, iOS Safari) ----
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var SPEECH_LANG = { en: "en-IN", te: "te-IN", hi: "hi-IN" };
+
+  function attachMic(wrap, textareaEl, field) {
+    if (!SpeechRecognitionCtor) return;
+    var micBtn = el("button", { type: "button", class: "mic-btn", "aria-label": "Voice input", title: "Voice input" });
+    micBtn.textContent = "🎤";
+    var recognition = null;
+    var listening = false;
+    var baseValue = "";
+
+    function stopListening() {
+      listening = false;
+      micBtn.classList.remove("listening");
+      if (recognition) { try { recognition.stop(); } catch (e) {} }
+    }
+
+    micBtn.addEventListener("click", function () {
+      if (listening) { stopListening(); return; }
+      recognition = new SpeechRecognitionCtor();
+      recognition.lang = SPEECH_LANG[state.lang] || "en-IN";
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      baseValue = textareaEl.value ? textareaEl.value.replace(/\s+$/, "") + " " : "";
+      listening = true;
+      micBtn.classList.add("listening");
+
+      recognition.onresult = function (event) {
+        var finalChunk = "", interimChunk = "";
+        for (var i = event.resultIndex; i < event.results.length; i++) {
+          var transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalChunk += transcript;
+          else interimChunk += transcript;
+        }
+        if (finalChunk) baseValue = baseValue + finalChunk + " ";
+        textareaEl.value = baseValue + interimChunk;
+        state.answers[field] = textareaEl.value;
+      };
+      recognition.onerror = function (event) {
+        stopListening();
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+          micBtn.title = t("micDenied");
+        }
+      };
+      recognition.onend = function () { stopListening(); };
+
+      try { recognition.start(); } catch (e) { stopListening(); }
+    });
+
+    wrap.appendChild(micBtn);
+  }
 
   function isStorySection(id) {
     return ["story","location","cause","actions","time","helped","repeat"].indexOf(id) !== -1;
@@ -646,7 +734,14 @@
     var ta = el("textarea", { placeholder: placeholder });
     ta.value = state.answers[field] || "";
     ta.addEventListener("input", function (e) { state.answers[field] = e.target.value; });
-    return ta;
+
+    var wrap = el("div", { class: "textarea-wrap" }, [ta]);
+    attachMic(wrap, ta, field);
+
+    var frag = document.createDocumentFragment();
+    frag.appendChild(wrap);
+    if (SpeechRecognitionCtor) frag.appendChild(el("p", { class: "mic-hint", text: t("micHint") }));
+    return frag;
   }
 
   function renderThankYou() {
