@@ -10,40 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
+    /* Deliberately a single, fixed light theme — this app is used by an
+       older, mixed-literacy audience on unpredictable phones; a
+       consistent, high-contrast light surface beats matching device
+       dark-mode settings that vary per visitor. */
     --ink: #1B2130;
     --paper: #F6F5F1;
     --paper-raised: #FFFFFF;
-    --line: #DEDBD3;
-    --muted: #6B6F7A;
-    --accent: #D98C2B;
-    --accent-ink: #5C3B0F;
+    --line: #C9C5BA;
+    --muted: #52565F;
+    --accent: #C97A1A;
+    --accent-ink: #4A2F0A;
     --success: #3F7A5C;
     --danger: #B4432F;
     --radius: 14px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ink: #EDEAE2;
-      --paper: #14161C;
-      --paper-raised: #1D212B;
-      --line: #2C303B;
-      --muted: #9A9FAC;
-      --accent: #E8A33D;
-      --accent-ink: #FCEFD9;
-      --success: #6FB894;
-      --danger: #E17A64;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ink: #EDEAE2;
-    --paper: #14161C;
-    --paper-raised: #1D212B;
-    --line: #2C303B;
-    --muted: #9A9FAC;
-    --accent: #E8A33D;
-    --accent-ink: #FCEFD9;
-    --success: #6FB894;
-    --danger: #E17A64;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -57,6 +37,7 @@
   }
   body.lang-hi { font-family: 'Hind', 'Work Sans', sans-serif; }
   body.lang-te { font-family: 'Noto Sans Telugu', 'Work Sans', sans-serif; }
+  html { font-size: 112.5%; } /* ~18px base — larger default text throughout */
 
   .topbar {
     position: sticky; top: 0; z-index: 10;
@@ -67,16 +48,17 @@
     gap: 12px;
   }
   .brand { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.01em; }
-  .lang-toggle { display: flex; gap: 6px; }
+  .lang-toggle { display: flex; gap: 8px; }
   .lang-toggle button {
-    border: 1px solid var(--line);
+    border: 1.5px solid var(--line);
     background: var(--paper-raised);
-    color: var(--muted);
+    color: var(--ink);
     border-radius: 999px;
-    padding: 5px 10px;
-    font-size: 0.78rem;
-    font-weight: 600;
+    padding: 8px 14px;
+    font-size: 0.92rem;
+    font-weight: 700;
     cursor: pointer;
+    min-width: 44px;
   }
   .lang-toggle button[aria-pressed="true"] {
     background: var(--accent);
@@ -107,48 +89,50 @@
   }
   .eyebrow {
     color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.88rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   h1.step-title {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
     line-height: 1.35;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     text-wrap: balance;
   }
   .step-hint {
     color: var(--muted);
-    font-size: 0.9rem;
-    margin: 0 0 18px;
-    line-height: 1.5;
+    font-size: 0.98rem;
+    margin: 0 0 20px;
+    line-height: 1.55;
   }
-  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+  .options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; }
   .option-card {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 14px;
     border: 1.5px solid var(--line);
     background: var(--paper-raised);
     border-radius: var(--radius);
-    padding: 14px 16px;
+    padding: 18px 20px;
     cursor: pointer;
-    font-size: 0.98rem;
-    line-height: 1.4;
+    font-size: 1.08rem;
+    line-height: 1.45;
+    min-height: 44px;
     transition: border-color 0.15s ease, background 0.15s ease;
   }
   .option-card:active { transform: scale(0.99); }
   .option-card.selected {
     border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 12%, var(--paper-raised));
+    background: color-mix(in srgb, var(--accent) 14%, var(--paper-raised));
   }
   .option-card .box {
-    width: 20px; height: 20px; flex: 0 0 20px;
-    border: 1.5px solid var(--muted);
-    border-radius: 6px;
+    width: 26px; height: 26px; flex: 0 0 26px;
+    border: 2px solid var(--muted);
+    border-radius: 7px;
     display: flex; align-items: center; justify-content: center;
     color: var(--accent-ink);
-    font-size: 13px;
+    font-size: 16px;
+    font-weight: 700;
     background: var(--paper-raised);
   }
   .option-card.radio .box { border-radius: 999px; }
@@ -160,30 +144,30 @@
     background: var(--paper-raised);
     color: var(--ink);
     border-radius: var(--radius);
-    padding: 12px 14px;
-    font-size: 0.98rem;
+    padding: 14px 16px;
+    font-size: 1.08rem;
     font-family: inherit;
     resize: vertical;
   }
-  textarea { min-height: 120px; }
+  textarea { min-height: 140px; }
   textarea:focus, input[type="text"]:focus, .option-card:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
   }
-  .field-note { color: var(--muted); font-size: 0.82rem; margin-top: 6px; }
+  .field-note { color: var(--muted); font-size: 0.92rem; margin-top: 6px; }
 
   .textarea-wrap { position: relative; }
-  .textarea-wrap textarea { padding-right: 52px; }
+  .textarea-wrap textarea { padding-right: 58px; }
   .mic-btn {
     position: absolute;
     right: 10px;
     bottom: 10px;
-    width: 38px; height: 38px;
+    width: 46px; height: 46px;
     border-radius: 999px;
     border: 1.5px solid var(--line);
     background: var(--paper-raised);
     color: var(--ink);
-    font-size: 17px;
+    font-size: 20px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     padding: 0;
@@ -198,8 +182,8 @@
     0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 45%, transparent); }
     50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--danger) 0%, transparent); }
   }
-  .mic-hint { color: var(--muted); font-size: 0.8rem; margin-top: 6px; }
-  .error-note { color: var(--danger); font-size: 0.86rem; margin-top: 10px; min-height: 1.2em; }
+  .mic-hint { color: var(--muted); font-size: 0.92rem; margin-top: 8px; }
+  .error-note { color: var(--danger); font-size: 1rem; font-weight: 600; margin-top: 12px; min-height: 1.2em; }
 
   .other-field { margin-top: 10px; }
 
@@ -214,30 +198,56 @@
   button.nav-btn {
     flex: 1;
     border-radius: 999px;
-    padding: 13px 18px;
-    font-size: 0.98rem;
-    font-weight: 600;
+    padding: 17px 22px;
+    font-size: 1.12rem;
+    font-weight: 700;
     cursor: pointer;
     border: 1.5px solid transparent;
+    min-height: 44px;
   }
   .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); flex: 0 0 auto; padding: 13px 20px; }
+  .btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); flex: 0 0 auto; padding: 17px 22px; }
   button.nav-btn:disabled { opacity: 0.5; cursor: default; }
 
-  .welcome-block { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 18px; font-size: 0.92rem; color: var(--muted); line-height: 1.55; }
+  .welcome-block { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 20px; font-size: 1.02rem; color: var(--ink); line-height: 1.6; }
 
   .thankyou { text-align: center; padding-top: 40px; }
-  .thankyou .icon { font-size: 2.4rem; margin-bottom: 10px; }
-  .thankyou h1 { font-size: 1.4rem; margin-bottom: 8px; }
-  .thankyou p { color: var(--muted); line-height: 1.5; }
+  .thankyou .icon { font-size: 2.6rem; margin-bottom: 12px; }
+  .thankyou h1 { font-size: 1.55rem; margin-bottom: 10px; }
+  .thankyou p { color: var(--ink); font-size: 1.05rem; line-height: 1.55; }
 
   .config-warning {
     background: var(--danger);
     color: #fff;
-    font-size: 0.82rem;
-    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 16px;
     text-align: center;
   }
+
+  .lang-gate-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .lang-gate-inner { width: 100%; max-width: 460px; margin: 0 auto; }
+  .lang-gate-brand { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+  .lang-gate-heading { color: var(--muted); font-size: 1.1rem; margin: 0 0 4px; line-height: 1.5; }
+  .lang-gate-options { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+  .lang-gate-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    border: 2px solid var(--line);
+    background: var(--paper-raised);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .lang-gate-card:active { transform: scale(0.99); }
+  .lang-gate-native { font-size: 1.6rem; font-weight: 700; color: var(--ink); }
+  .lang-gate-sub { font-size: 1rem; color: var(--muted); }
 
   @media (min-width: 480px) {
     h1.step-title { font-size: 1.5rem; }
@@ -250,15 +260,17 @@
   ⚠ APPS_SCRIPT_URL is not configured yet in index.html — responses will not be saved. See DEPLOY.md.
 </div>
 
-<div class="topbar">
-  <div class="brand" id="brandText">Pickup Story</div>
-  <div class="lang-toggle" role="group" aria-label="Language">
-    <button type="button" data-lang="en" aria-pressed="true">EN</button>
-    <button type="button" data-lang="te" aria-pressed="false">TE</button>
-    <button type="button" data-lang="hi" aria-pressed="false">HI</button>
+<div id="chrome" hidden>
+  <div class="topbar">
+    <div class="brand" id="brandText">Pickup Story</div>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="te" aria-pressed="false">TE</button>
+      <button type="button" data-lang="hi" aria-pressed="false">HI</button>
+    </div>
   </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:4%"></div></div>
 </div>
-<div class="progress-track"><div class="progress-fill" id="progressFill" style="width:4%"></div></div>
 
 <main>
   <div class="card" id="card"></div>
@@ -457,7 +469,48 @@
 
   var STEP_ORDER = ["welcome","role","city","scope","difficulty","story","location","cause","actions","time","helped","repeat","more","followup"];
 
-  var state = { lang: "en", index: 0, answers: {}, submitting: false, done: false };
+  var state = { lang: "en", langChosen: false, index: 0, answers: {}, submitting: false, done: false };
+
+  var LANGUAGE_OPTIONS = [
+    { code: "en", native: "English", sub: "Continue in English" },
+    { code: "te", native: "తెలుగు", sub: "తెలుగులో కొనసాగించండి" },
+    { code: "hi", native: "हिन्दी", sub: "हिन्दी में जारी रखें" }
+  ];
+
+  function renderLanguageGate() {
+    document.getElementById("chrome").hidden = true;
+    document.getElementById("navbar").style.display = "none";
+    var card = document.getElementById("card");
+    card.innerHTML = "";
+    var page = el("div", { class: "lang-gate-page" });
+    var inner = el("div", { class: "lang-gate-inner" });
+    inner.appendChild(el("div", { class: "lang-gate-brand", text: "Pickup Story · పికప్ కథ · पिकअप कहानी" }));
+    inner.appendChild(el("p", { class: "lang-gate-heading", text: "Choose your language" }));
+    inner.appendChild(el("p", { class: "lang-gate-heading", text: "మీ భాషను ఎంచుకోండి" }));
+    inner.appendChild(el("p", { class: "lang-gate-heading", text: "अपनी भाषा चुनें" }));
+    var opts = el("div", { class: "lang-gate-options" });
+    LANGUAGE_OPTIONS.forEach(function (opt) {
+      var c = el("div", { class: "lang-gate-card", tabindex: "0", role: "button" }, [
+        el("span", { class: "lang-gate-native", text: opt.native }),
+        el("span", { class: "lang-gate-sub", text: opt.sub })
+      ]);
+      c.addEventListener("click", function () { chooseLanguage(opt.code); });
+      c.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chooseLanguage(opt.code); }
+      });
+      opts.appendChild(c);
+    });
+    inner.appendChild(opts);
+    page.appendChild(inner);
+    card.appendChild(page);
+  }
+
+  function chooseLanguage(code) {
+    state.langChosen = true;
+    document.getElementById("chrome").hidden = false;
+    document.getElementById("navbar").style.display = "";
+    setLang(code);
+  }
 
   function t(key) { return I18N[state.lang][key] || key; }
 
@@ -892,7 +945,7 @@
     document.getElementById("configWarning").hidden = false;
   }
 
-  setLang("en");
+  renderLanguageGate();
 })();
 </script>
 </body>
