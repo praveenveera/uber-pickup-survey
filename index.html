@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pickup Story — Hyderabad</title>
+<meta name="description" content="Independent student research survey about Uber pickup experiences in Hyderabad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1B2130;
+    --paper: #F6F5F1;
+    --paper-raised: #FFFFFF;
+    --line: #DEDBD3;
+    --muted: #6B6F7A;
+    --accent: #D98C2B;
+    --accent-ink: #5C3B0F;
+    --success: #3F7A5C;
+    --danger: #B4432F;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #EDEAE2;
+      --paper: #14161C;
+      --paper-raised: #1D212B;
+      --line: #2C303B;
+      --muted: #9A9FAC;
+      --accent: #E8A33D;
+      --accent-ink: #FCEFD9;
+      --success: #6FB894;
+      --danger: #E17A64;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #EDEAE2;
+    --paper: #14161C;
+    --paper-raised: #1D212B;
+    --line: #2C303B;
+    --muted: #9A9FAC;
+    --accent: #E8A33D;
+    --accent-ink: #FCEFD9;
+    --success: #6FB894;
+    --danger: #E17A64;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', 'Hind', 'Noto Sans Telugu', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  body.lang-hi { font-family: 'Hind', 'Work Sans', sans-serif; }
+  body.lang-te { font-family: 'Noto Sans Telugu', 'Work Sans', sans-serif; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .brand { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.01em; }
+  .lang-toggle { display: flex; gap: 6px; }
+  .lang-toggle button {
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .lang-toggle button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--line);
+    width: 100%;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 20px 16px 100px;
+  }
+  .card {
+    width: 100%;
+    max-width: 460px;
+  }
+  .eyebrow {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  h1.step-title {
+    font-size: 1.3rem;
+    line-height: 1.35;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .step-hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+  .option-card {
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid var(--line);
+    background: var(--paper-raised);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    font-size: 0.98rem;
+    line-height: 1.4;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .option-card:active { transform: scale(0.99); }
+  .option-card.selected {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--paper-raised));
+  }
+  .option-card .box {
+    width: 20px; height: 20px; flex: 0 0 20px;
+    border: 1.5px solid var(--muted);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-ink);
+    font-size: 13px;
+    background: var(--paper-raised);
+  }
+  .option-card.radio .box { border-radius: 999px; }
+  .option-card.selected .box { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    border: 1.5px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--ink);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 0.98rem;
+    font-family: inherit;
+    resize: vertical;
+  }
+  textarea { min-height: 120px; }
+  textarea:focus, input[type="text"]:focus, .option-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .field-note { color: var(--muted); font-size: 0.82rem; margin-top: 6px; }
+  .error-note { color: var(--danger); font-size: 0.86rem; margin-top: 10px; min-height: 1.2em; }
+
+  .other-field { margin-top: 10px; }
+
+  .navbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    display: flex; justify-content: center; gap: 10px;
+  }
+  .navbar-inner { width: 100%; max-width: 460px; display: flex; gap: 10px; }
+  button.nav-btn {
+    flex: 1;
+    border-radius: 999px;
+    padding: 13px 18px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); flex: 0 0 auto; padding: 13px 20px; }
+  button.nav-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .welcome-block { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin-bottom: 18px; font-size: 0.92rem; color: var(--muted); line-height: 1.55; }
+
+  .thankyou { text-align: center; padding-top: 40px; }
+  .thankyou .icon { font-size: 2.4rem; margin-bottom: 10px; }
+  .thankyou h1 { font-size: 1.4rem; margin-bottom: 8px; }
+  .thankyou p { color: var(--muted); line-height: 1.5; }
+
+  .config-warning {
+    background: var(--danger);
+    color: #fff;
+    font-size: 0.82rem;
+    padding: 8px 16px;
+    text-align: center;
+  }
+
+  @media (min-width: 480px) {
+    h1.step-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="configWarning" class="config-warning" hidden>
+  ⚠ APPS_SCRIPT_URL is not configured yet in index.html — responses will not be saved. See DEPLOY.md.
+</div>
+
+<div class="topbar">
+  <div class="brand" id="brandText">Pickup Story</div>
+  <div class="lang-toggle" role="group" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="te" aria-pressed="false">TE</button>
+    <button type="button" data-lang="hi" aria-pressed="false">HI</button>
+  </div>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill" style="width:4%"></div></div>
+
+<main>
+  <div class="card" id="card"></div>
+</main>
+
+<div class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <button type="button" class="nav-btn btn-secondary" id="backBtn">Back</button>
+    <button type="button" class="nav-btn btn-primary" id="nextBtn">Next</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ======================================================================
+  // CONFIG — paste your deployed Google Apps Script Web App URL here.
+  // See DEPLOY.md for how to create it. Leave the placeholder to see a
+  // warning banner reminding you it's not wired up yet.
+  // ======================================================================
+  var APPS_SCRIPT_URL = "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE";
+
+  var I18N = {
+    en: {
+      brand: "Pickup Story",
+      welcomeTitle: "Your Uber pickup experience",
+      welcomeBody: "This is an independent student product-management research project. It is not run by or affiliated with Uber. It asks about your real experience finding your driver or rider after a booking is confirmed. Takes about 5 minutes. Your answers are anonymous unless you choose to leave contact details at the end.",
+      consentLabel: "I agree that my anonymous answers may be used as research quotes in this student project. My name will not be published.",
+      roleTitle: "Are you answering as a...",
+      roleRider: "Rider — someone who books rides",
+      roleDriver: "Driver — someone who drives for Uber/Ola",
+      cityTitle: "Which city are your answers about?",
+      cityHyd: "Hyderabad",
+      cityOther: "Other",
+      cityOtherPlaceholder: "Type the city name",
+      scopeTitle: "In the last 3 months, have you taken or driven a regular 4-seater cab (not Auto or Bike)?",
+      yes: "Yes",
+      no: "No",
+      notSure: "Not sure",
+      difficultyTitleRider: "Have you ever had a confusing moment trying to find your driver after booking?",
+      difficultyTitleDriver: "Have you ever had a confusing moment trying to reach or identify your rider?",
+      difficultyNotSureLabel: "Not sure, but let me try to describe something",
+      storyTitleRider: "Tell us about the most recent time this happened. What happened, step by step — from booking to the trip starting?",
+      storyTitleDriver: "Tell us about the most recent time you struggled to reach or identify a rider. What happened, step by step?",
+      storyPlaceholder: "Type your story here...",
+      locationTitle: "Where were you?",
+      locAirport: "Airport", locMall: "Shopping mall", locOffice: "Office or tech campus",
+      locStation: "Metro or railway station", locHospital: "Hospital", locHotel: "Hotel or event venue",
+      locStreet: "Busy street", locResidential: "Residential complex / gated community", locOther: "Other",
+      causeTitle: "What exactly caused the confusion?",
+      causePlaceholder: "Type here...",
+      actionsTitle: "What did you do about it? (choose all that apply)",
+      actCall: "Called", actMessage: "Messaged", actMove: "Moved to a different spot",
+      actWait: "Waited", actCancel: "Cancelled the ride", actOther: "Something else",
+      actionsOtherPlaceholder: "Describe briefly",
+      timeTitle: "Roughly how much extra time did it cost? (minutes, your best estimate)",
+      timeHint: "Optional — leave blank if unsure",
+      timePlaceholder: "e.g. 15",
+      helpedTitle: "What finally helped, if anything?",
+      helpedHint: "Optional",
+      helpedPlaceholder: "Type here...",
+      repeatTitle: "Has this kind of thing happened to you more than once?",
+      moreTitle: "Anything else you'd like to add?",
+      moreHint: "Optional",
+      morePlaceholder: "Type here...",
+      followupTitle: "Would you be open to a short 10-minute follow-up call?",
+      followupContactPlaceholder: "Phone or email (optional)",
+      required: "Please answer to continue.",
+      back: "Back",
+      next: "Next",
+      submit: "Submit",
+      submitting: "Sending...",
+      thankyouTitle: "Thank you!",
+      thankyouBody: "Your answers were recorded. If you shared contact details, we may reach out for a short follow-up.",
+      errorSubmit: "Something went wrong sending your answers. Please check your connection and try again."
+    },
+    te: {
+      brand: "పికప్ కథ",
+      welcomeTitle: "మీ ఉబర్ పికప్ అనుభవం",
+      welcomeBody: "ఇది స్వతంత్ర విద్యార్థి ప్రొడక్ట్ మేనేజ్‌మెంట్ పరిశోధన ప్రాజెక్ట్. ఇది ఉబర్ ద్వారా నిర్వహించబడదు లేదా దానితో సంబంధం కలిగి ఉండదు. బుకింగ్ నిర్ధారించిన తర్వాత మీ డ్రైవర్‌ను లేదా రైడర్‌ను కనుక్కోవడంలో మీ నిజమైన అనుభవం గురించి ఇది అడుగుతుంది. దాదాపు 5 నిమిషాలు పడుతుంది. చివర్లో కాంటాక్ట్ వివరాలు ఇవ్వకపోతే, మీ సమాధానాలు అనామకంగా ఉంటాయి.",
+      consentLabel: "నా అనామక సమాధానాలను ఈ విద్యార్థి ప్రాజెక్ట్‌లో పరిశోధన కోట్‌లుగా ఉపయోగించవచ్చని నేను అంగీకరిస్తున్నాను. నా పేరు ప్రచురించబడదు.",
+      roleTitle: "మీరు దేని కోసం సమాధానం ఇస్తున్నారు...",
+      roleRider: "రైడర్ — రైడ్ బుక్ చేసుకునే వ్యక్తి",
+      roleDriver: "డ్రైవర్ — ఉబర్/ఓలా కోసం నడిపే వ్యక్తి",
+      cityTitle: "మీ సమాధానాలు ఏ నగరానికి సంబంధించినవి?",
+      cityHyd: "హైదరాబాద్",
+      cityOther: "ఇతర",
+      cityOtherPlaceholder: "నగరం పేరు టైప్ చేయండి",
+      scopeTitle: "గత 3 నెలల్లో, మీరు సాధారణ 4-సీట్ల కారులో (ఆటో లేదా బైక్ కాదు) ప్రయాణించారా లేదా నడిపారా?",
+      yes: "అవును",
+      no: "లేదు",
+      notSure: "ఖచ్చితంగా తెలియదు",
+      difficultyTitleRider: "బుక్ చేసిన తర్వాత మీ డ్రైవర్‌ను కనుక్కోవడంలో మీకు ఎప్పుడైనా గందరగోళం ఎదురైందా?",
+      difficultyTitleDriver: "రైడర్‌ను చేరుకోవడంలో లేదా గుర్తించడంలో మీకు ఎప్పుడైనా గందరగోళం ఎదురైందా?",
+      difficultyNotSureLabel: "ఖచ్చితంగా తెలియదు, కానీ ప్రయత్నిస్తాను",
+      storyTitleRider: "ఇది ఇటీవల జరిగిన సంఘటన గురించి చెప్పండి. బుకింగ్ నుండి ట్రిప్ మొదలయ్యే వరకు, అడుగడుగునా ఏం జరిగింది?",
+      storyTitleDriver: "రైడర్‌ను చేరుకోవడంలో లేదా కనుక్కోవడంలో మీరు ఇటీవల ఇబ్బంది పడిన సంఘటన గురించి చెప్పండి. అడుగడుగునా ఏం జరిగింది?",
+      storyPlaceholder: "మీ కథ ఇక్కడ టైప్ చేయండి...",
+      locationTitle: "మీరు ఎక్కడ ఉన్నారు?",
+      locAirport: "విమానాశ్రయం", locMall: "షాపింగ్ మాల్", locOffice: "ఆఫీస్ లేదా టెక్ క్యాంపస్",
+      locStation: "మెట్రో లేదా రైల్వే స్టేషన్", locHospital: "ఆసుపత్రి", locHotel: "హోటల్ లేదా ఈవెంట్ వేదిక",
+      locStreet: "రద్దీ రోడ్డు", locResidential: "నివాస సముదాయం / గేటెడ్ కమ్యూనిటీ", locOther: "ఇతర",
+      causeTitle: "గందరగోళానికి ఖచ్చితంగా కారణం ఏమిటి?",
+      causePlaceholder: "ఇక్కడ టైప్ చేయండి...",
+      actionsTitle: "మీరు దాని గురించి ఏమి చేశారు? (వర్తించే అన్నింటినీ ఎంచుకోండి)",
+      actCall: "కాల్ చేశారు", actMessage: "మెసేజ్ చేశారు", actMove: "వేరే స్థలానికి వెళ్లారు",
+      actWait: "వేచి ఉన్నారు", actCancel: "రైడ్ క్యాన్సిల్ చేశారు", actOther: "ఇంకేదో",
+      actionsOtherPlaceholder: "క్లుప్తంగా వివరించండి",
+      timeTitle: "దాదాపు ఎంత అదనపు సమయం వృథా అయింది? (నిమిషాలు, మీ అంచనా)",
+      timeHint: "ఐచ్ఛికం — తెలియకపోతే ఖాళీగా వదలండి",
+      timePlaceholder: "ఉదా. 15",
+      helpedTitle: "చివరికి ఏది సహాయపడింది, ఏదైనా ఉంటే?",
+      helpedHint: "ఐచ్ఛికం",
+      helpedPlaceholder: "ఇక్కడ టైప్ చేయండి...",
+      repeatTitle: "ఇలాంటిది మీకు ఒకటి కంటే ఎక్కువసార్లు జరిగిందా?",
+      moreTitle: "మీరు ఇంకేమైనా జోడించాలనుకుంటున్నారా?",
+      moreHint: "ఐచ్ఛికం",
+      morePlaceholder: "ఇక్కడ టైప్ చేయండి...",
+      followupTitle: "10 నిమిషాల ఫాలో-అప్ కాల్‌కు మీరు సిద్ధంగా ఉన్నారా?",
+      followupContactPlaceholder: "ఫోన్ లేదా ఇమెయిల్ (ఐచ్ఛికం)",
+      required: "కొనసాగించడానికి దయచేసి సమాధానం ఇవ్వండి.",
+      back: "వెనక్కి",
+      next: "తదుపరి",
+      submit: "సమర్పించండి",
+      submitting: "పంపుతోంది...",
+      thankyouTitle: "ధన్యవాదాలు!",
+      thankyouBody: "మీ సమాధానాలు నమోదు చేయబడ్డాయి. మీరు కాంటాక్ట్ వివరాలు ఇచ్చి ఉంటే, ఫాలో-అప్ కోసం మేము సంప్రదించవచ్చు.",
+      errorSubmit: "మీ సమాధానాలను పంపడంలో ఏదో తప్పు జరిగింది. దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
+    },
+    hi: {
+      brand: "पिकअप कहानी",
+      welcomeTitle: "आपका उबर पिकअप अनुभव",
+      welcomeBody: "यह एक स्वतंत्र छात्र प्रोडक्ट मैनेजमेंट शोध प्रोजेक्ट है। यह उबर द्वारा संचालित या उससे संबद्ध नहीं है। यह बुकिंग कन्फर्म होने के बाद अपने ड्राइवर या राइडर को ढूंढने के आपके असली अनुभव के बारे में पूछता है। इसमें लगभग 5 मिनट लगेंगे। अंत में संपर्क जानकारी न देने पर आपके जवाब गुमनाम रहेंगे।",
+      consentLabel: "मैं सहमत हूं कि मेरे गुमनाम जवाबों का उपयोग इस छात्र प्रोजेक्ट में रिसर्च कोट के रूप में किया जा सकता है। मेरा नाम प्रकाशित नहीं किया जाएगा।",
+      roleTitle: "आप किसकी तरफ से जवाब दे रहे हैं...",
+      roleRider: "राइडर — जो राइड बुक करता है",
+      roleDriver: "ड्राइवर — जो उबर/ओला चलाता है",
+      cityTitle: "आपके जवाब किस शहर से संबंधित हैं?",
+      cityHyd: "हैदराबाद",
+      cityOther: "अन्य",
+      cityOtherPlaceholder: "शहर का नाम टाइप करें",
+      scopeTitle: "पिछले 3 महीनों में, क्या आपने सामान्य 4-सीटर कार (ऑटो या बाइक नहीं) में सफर किया या चलाई है?",
+      yes: "हां",
+      no: "नहीं",
+      notSure: "पक्का नहीं",
+      difficultyTitleRider: "बुकिंग के बाद अपने ड्राइवर को ढूंढने में कभी उलझन हुई है?",
+      difficultyTitleDriver: "राइडर तक पहुंचने या उसे पहचानने में कभी उलझन हुई है?",
+      difficultyNotSureLabel: "पक्का नहीं, पर मैं बताने की कोशिश करता/करती हूं",
+      storyTitleRider: "हाल ही में हुई ऐसी घटना के बारे में बताएं। बुकिंग से लेकर ट्रिप शुरू होने तक, कदम-दर-कदम क्या हुआ?",
+      storyTitleDriver: "हाल ही में राइडर तक पहुंचने या उसे ढूंढने में हुई परेशानी के बारे में बताएं। कदम-दर-कदम क्या हुआ?",
+      storyPlaceholder: "अपनी कहानी यहां लिखें...",
+      locationTitle: "आप कहां थे?",
+      locAirport: "हवाई अड्डा", locMall: "शॉपिंग मॉल", locOffice: "ऑफिस या टेक कैंपस",
+      locStation: "मेट्रो या रेलवे स्टेशन", locHospital: "अस्पताल", locHotel: "होटल या इवेंट वेन्यू",
+      locStreet: "व्यस्त सड़क", locResidential: "रिहायशी परिसर / गेटेड कम्युनिटी", locOther: "अन्य",
+      causeTitle: "उलझन की असली वजह क्या थी?",
+      causePlaceholder: "यहां लिखें...",
+      actionsTitle: "आपने इसके बारे में क्या किया? (जो लागू हो वह चुनें)",
+      actCall: "कॉल किया", actMessage: "मैसेज किया", actMove: "दूसरी जगह चले गए",
+      actWait: "इंतजार किया", actCancel: "राइड कैंसिल की", actOther: "कुछ और",
+      actionsOtherPlaceholder: "संक्षेप में बताएं",
+      timeTitle: "लगभग कितना अतिरिक्त समय बर्बाद हुआ? (मिनट में, आपका अनुमान)",
+      timeHint: "वैकल्पिक — पक्का न हो तो खाली छोड़ें",
+      timePlaceholder: "उदा. 15",
+      helpedTitle: "आखिर में किस चीज़ से मदद मिली, अगर कुछ मिली हो?",
+      helpedHint: "वैकल्पिक",
+      helpedPlaceholder: "यहां लिखें...",
+      repeatTitle: "क्या ऐसा आपके साथ एक से ज़्यादा बार हुआ है?",
+      moreTitle: "क्या आप कुछ और जोड़ना चाहेंगे?",
+      moreHint: "वैकल्पिक",
+      morePlaceholder: "यहां लिखें...",
+      followupTitle: "क्या आप 10 मिनट की फॉलो-अप कॉल के लिए तैयार होंगे?",
+      followupContactPlaceholder: "फोन या ईमेल (वैकल्पिक)",
+      required: "जारी रखने के लिए कृपया जवाब दें।",
+      back: "वापस",
+      next: "आगे",
+      submit: "जमा करें",
+      submitting: "भेजा जा रहा है...",
+      thankyouTitle: "धन्यवाद!",
+      thankyouBody: "आपके जवाब दर्ज कर लिए गए हैं। अगर आपने संपर्क जानकारी दी है, तो हम फॉलो-अप के लिए संपर्क कर सकते हैं।",
+      errorSubmit: "आपके जवाब भेजने में कुछ गड़बड़ हुई। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
+    }
+  };
+
+  var LOCATIONS = ["locAirport","locMall","locOffice","locStation","locHospital","locHotel","locStreet","locResidential","locOther"];
+  var LOCATION_IDS = ["airport","mall","office","station","hospital","hotel","street","residential","other"];
+  var ACTIONS = ["actCall","actMessage","actMove","actWait","actCancel","actOther"];
+  var ACTION_IDS = ["called","messaged","moved","waited","cancelled","other"];
+
+  var STEP_ORDER = ["welcome","role","city","scope","difficulty","story","location","cause","actions","time","helped","repeat","more","followup"];
+
+  var state = { lang: "en", index: 0, answers: {}, submitting: false, done: false };
+
+  function t(key) { return I18N[state.lang][key] || key; }
+
+  function isStorySection(id) {
+    return ["story","location","cause","actions","time","helped","repeat"].indexOf(id) !== -1;
+  }
+
+  function visibleSteps() {
+    return STEP_ORDER.filter(function (id) {
+      if (isStorySection(id) && state.answers.difficulty === "no") return false;
+      return true;
+    });
+  }
+
+  function currentStepId() {
+    return visibleSteps()[state.index];
+  }
+
+  function isRider() { return state.answers.role === "rider"; }
+
+  // ---- rendering ----
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === "class") node.className = attrs[k];
+      else if (k === "text") node.textContent = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+
+  function optionCard(kind, selected, label, onClick) {
+    var card = el("div", {
+      class: "option-card " + kind + (selected ? " selected" : ""),
+      tabindex: "0",
+      role: kind === "radio" ? "radio" : "checkbox",
+      "aria-checked": selected ? "true" : "false"
+    }, [
+      el("span", { class: "box", text: selected ? "✓" : "" }),
+      el("span", { text: label })
+    ]);
+    card.addEventListener("click", onClick);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); }
+    });
+    return card;
+  }
+
+  function renderStep() {
+    var card = document.getElementById("card");
+    card.innerHTML = "";
+    var id = currentStepId();
+
+    if (!id) { renderThankYou(); return; }
+
+    updateProgress();
+
+    var title, hint;
+
+    switch (id) {
+      case "welcome": {
+        card.appendChild(el("div", { class: "eyebrow", text: "1 / " + visibleSteps().length }));
+        card.appendChild(el("h1", { class: "step-title", text: t("welcomeTitle") }));
+        card.appendChild(el("div", { class: "welcome-block", text: t("welcomeBody") }));
+        var box = optionCard("checkbox", state.answers.consent === true, t("consentLabel"), function () {
+          state.answers.consent = !state.answers.consent;
+          renderStep();
+        });
+        card.appendChild(el("div", { class: "options" }, [box]));
+        break;
+      }
+      case "role": {
+        title = t("roleTitle");
+        card.appendChild(stepHeader(title));
+        var opts = el("div", { class: "options" }, [
+          optionCard("radio", state.answers.role === "rider", t("roleRider"), function () { state.answers.role = "rider"; renderStep(); }),
+          optionCard("radio", state.answers.role === "driver", t("roleDriver"), function () { state.answers.role = "driver"; renderStep(); })
+        ]);
+        card.appendChild(opts);
+        break;
+      }
+      case "city": {
+        card.appendChild(stepHeader(t("cityTitle")));
+        card.appendChild(el("div", { class: "options" }, [
+          optionCard("radio", state.answers.city === "hyderabad", t("cityHyd"), function () { state.answers.city = "hyderabad"; renderStep(); }),
+          optionCard("radio", state.answers.city === "other", t("cityOther"), function () { state.answers.city = "other"; renderStep(); })
+        ]));
+        if (state.answers.city === "other") {
+          var input = el("input", { type: "text", placeholder: t("cityOtherPlaceholder"), class: "other-field" });
+          input.value = state.answers.cityOther || "";
+          input.addEventListener("input", function (e) { state.answers.cityOther = e.target.value; });
+          card.appendChild(input);
+        }
+        break;
+      }
+      case "scope": {
+        card.appendChild(stepHeader(t("scopeTitle")));
+        card.appendChild(yesNoNotSure("scope"));
+        break;
+      }
+      case "difficulty": {
+        var dTitle = isRider() ? t("difficultyTitleRider") : t("difficultyTitleDriver");
+        card.appendChild(stepHeader(dTitle));
+        card.appendChild(el("div", { class: "options" }, [
+          optionCard("radio", state.answers.difficulty === "yes", t("yes"), function () { state.answers.difficulty = "yes"; renderStep(); }),
+          optionCard("radio", state.answers.difficulty === "notsure", t("difficultyNotSureLabel"), function () { state.answers.difficulty = "notsure"; renderStep(); }),
+          optionCard("radio", state.answers.difficulty === "no", t("no"), function () { state.answers.difficulty = "no"; renderStep(); })
+        ]));
+        break;
+      }
+      case "story": {
+        var sTitle = isRider() ? t("storyTitleRider") : t("storyTitleDriver");
+        card.appendChild(stepHeader(sTitle));
+        card.appendChild(textArea("story", t("storyPlaceholder")));
+        break;
+      }
+      case "location": {
+        card.appendChild(stepHeader(t("locationTitle")));
+        var locOpts = el("div", { class: "options" });
+        LOCATIONS.forEach(function (key, i) {
+          var lid = LOCATION_IDS[i];
+          locOpts.appendChild(optionCard("radio", state.answers.location === lid, t(key), function () { state.answers.location = lid; renderStep(); }));
+        });
+        card.appendChild(locOpts);
+        break;
+      }
+      case "cause": {
+        card.appendChild(stepHeader(t("causeTitle")));
+        card.appendChild(textArea("cause", t("causePlaceholder")));
+        break;
+      }
+      case "actions": {
+        card.appendChild(stepHeader(t("actionsTitle")));
+        var actOpts = el("div", { class: "options" });
+        if (!state.answers.actions) state.answers.actions = [];
+        ACTIONS.forEach(function (key, i) {
+          var aid = ACTION_IDS[i];
+          var selected = state.answers.actions.indexOf(aid) !== -1;
+          actOpts.appendChild(optionCard("checkbox", selected, t(key), function () {
+            var idx = state.answers.actions.indexOf(aid);
+            if (idx === -1) state.answers.actions.push(aid); else state.answers.actions.splice(idx, 1);
+            renderStep();
+          }));
+        });
+        card.appendChild(actOpts);
+        if (state.answers.actions.indexOf("other") !== -1) {
+          var otherInput = el("input", { type: "text", placeholder: t("actionsOtherPlaceholder"), class: "other-field" });
+          otherInput.value = state.answers.actionsOther || "";
+          otherInput.addEventListener("input", function (e) { state.answers.actionsOther = e.target.value; });
+          card.appendChild(otherInput);
+        }
+        break;
+      }
+      case "time": {
+        card.appendChild(stepHeader(t("timeTitle"), t("timeHint")));
+        var timeInput = el("input", { type: "text", inputmode: "numeric", placeholder: t("timePlaceholder") });
+        timeInput.value = state.answers.timeLost || "";
+        timeInput.addEventListener("input", function (e) { state.answers.timeLost = e.target.value; });
+        card.appendChild(timeInput);
+        break;
+      }
+      case "helped": {
+        card.appendChild(stepHeader(t("helpedTitle"), t("helpedHint")));
+        card.appendChild(textArea("helped", t("helpedPlaceholder")));
+        break;
+      }
+      case "repeat": {
+        card.appendChild(stepHeader(t("repeatTitle")));
+        card.appendChild(el("div", { class: "options" }, [
+          optionCard("radio", state.answers.repeat === "yes", t("yes"), function () { state.answers.repeat = "yes"; renderStep(); }),
+          optionCard("radio", state.answers.repeat === "no", t("no"), function () { state.answers.repeat = "no"; renderStep(); })
+        ]));
+        break;
+      }
+      case "more": {
+        card.appendChild(stepHeader(t("moreTitle"), t("moreHint")));
+        card.appendChild(textArea("more", t("morePlaceholder")));
+        break;
+      }
+      case "followup": {
+        card.appendChild(stepHeader(t("followupTitle")));
+        card.appendChild(el("div", { class: "options" }, [
+          optionCard("radio", state.answers.followup === "yes", t("yes"), function () { state.answers.followup = "yes"; renderStep(); }),
+          optionCard("radio", state.answers.followup === "no", t("no"), function () { state.answers.followup = "no"; renderStep(); })
+        ]));
+        if (state.answers.followup === "yes") {
+          var contactInput = el("input", { type: "text", placeholder: t("followupContactPlaceholder"), class: "other-field" });
+          contactInput.value = state.answers.contact || "";
+          contactInput.addEventListener("input", function (e) { state.answers.contact = e.target.value; });
+          card.appendChild(contactInput);
+        }
+        break;
+      }
+    }
+
+    card.appendChild(el("div", { class: "error-note", id: "errorNote" }));
+    updateNavButtons();
+  }
+
+  function stepHeader(title, hint) {
+    var wrap = document.createDocumentFragment();
+    wrap.appendChild(el("div", { class: "eyebrow", text: (state.index + 1) + " / " + visibleSteps().length }));
+    wrap.appendChild(el("h1", { class: "step-title", text: title }));
+    if (hint) wrap.appendChild(el("p", { class: "step-hint", text: hint }));
+    return wrap;
+  }
+
+  function yesNoNotSure(field) {
+    return el("div", { class: "options" }, [
+      optionCard("radio", state.answers[field] === "yes", t("yes"), function () { state.answers[field] = "yes"; renderStep(); }),
+      optionCard("radio", state.answers[field] === "no", t("no"), function () { state.answers[field] = "no"; renderStep(); }),
+      optionCard("radio", state.answers[field] === "notsure", t("notSure"), function () { state.answers[field] = "notsure"; renderStep(); })
+    ]);
+  }
+
+  function textArea(field, placeholder) {
+    var ta = el("textarea", { placeholder: placeholder });
+    ta.value = state.answers[field] || "";
+    ta.addEventListener("input", function (e) { state.answers[field] = e.target.value; });
+    return ta;
+  }
+
+  function renderThankYou() {
+    document.getElementById("navbar").style.display = "none";
+    document.getElementById("progressFill").style.width = "100%";
+    var card = document.getElementById("card");
+    card.innerHTML = "";
+    card.appendChild(el("div", { class: "thankyou" }, [
+      el("div", { class: "icon", text: "🙏" }),
+      el("h1", { text: t("thankyouTitle") }),
+      el("p", { text: t("thankyouBody") })
+    ]));
+  }
+
+  function updateProgress() {
+    var total = visibleSteps().length;
+    var pct = Math.round(((state.index + 1) / total) * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+  }
+
+  function updateNavButtons() {
+    document.getElementById("backBtn").style.visibility = state.index === 0 ? "hidden" : "visible";
+    var isLast = state.index === visibleSteps().length - 1;
+    var nextBtn = document.getElementById("nextBtn");
+    nextBtn.textContent = isLast ? t("submit") : t("next");
+    nextBtn.disabled = state.submitting;
+  }
+
+  function validateCurrent() {
+    var id = currentStepId();
+    var a = state.answers;
+    switch (id) {
+      case "welcome": return a.consent === true;
+      case "role": return !!a.role;
+      case "city": return !!a.city;
+      case "scope": return !!a.scope;
+      case "difficulty": return !!a.difficulty;
+      case "story": return !!(a.story && a.story.trim());
+      case "location": return !!a.location;
+      case "cause": return !!(a.cause && a.cause.trim());
+      case "actions": return a.actions && a.actions.length > 0;
+      case "time": return true;
+      case "helped": return true;
+      case "repeat": return !!a.repeat;
+      case "more": return true;
+      case "followup": return !!a.followup;
+      default: return true;
+    }
+  }
+
+  function showError() {
+    var note = document.getElementById("errorNote");
+    if (note) note.textContent = t("required");
+  }
+
+  function clearError() {
+    var note = document.getElementById("errorNote");
+    if (note) note.textContent = "";
+  }
+
+  function goNext() {
+    if (!validateCurrent()) { showError(); return; }
+    clearError();
+    var steps = visibleSteps();
+    if (state.index === steps.length - 1) {
+      submit();
+      return;
+    }
+    state.index += 1;
+    renderStep();
+    window.scrollTo(0, 0);
+  }
+
+  function goBack() {
+    if (state.index === 0) return;
+    state.index -= 1;
+    renderStep();
+    window.scrollTo(0, 0);
+  }
+
+  function submit() {
+    state.submitting = true;
+    updateNavButtons();
+    document.getElementById("nextBtn").textContent = t("submitting");
+
+    var payload = {
+      timestamp: new Date().toISOString(),
+      language: state.lang,
+      role: state.answers.role || "",
+      city: state.answers.city || "",
+      cityOther: state.answers.cityOther || "",
+      scope4wheeler: state.answers.scope || "",
+      difficulty: state.answers.difficulty || "",
+      story: state.answers.story || "",
+      location: state.answers.location || "",
+      cause: state.answers.cause || "",
+      actions: (state.answers.actions || []).join(", "),
+      actionsOther: state.answers.actionsOther || "",
+      timeLostMinutes: state.answers.timeLost || "",
+      helped: state.answers.helped || "",
+      repeatOccurrence: state.answers.repeat || "",
+      more: state.answers.more || "",
+      followupOk: state.answers.followup || "",
+      contact: state.answers.contact || ""
+    };
+
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
+      // No backend configured — still show thank-you locally so you can test
+      // the flow, but nothing is actually saved. See the red banner.
+      state.index += 1;
+      renderStep();
+      return;
+    }
+
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }).then(function () {
+      state.index += 1;
+      renderStep();
+    }).catch(function () {
+      state.submitting = false;
+      var note = document.getElementById("errorNote");
+      if (note) note.textContent = t("errorSubmit");
+      updateNavButtons();
+    });
+  }
+
+  function setLang(lang) {
+    state.lang = lang;
+    document.body.className = "lang-" + lang;
+    document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === lang ? "true" : "false");
+    });
+    document.getElementById("brandText").textContent = t("brand");
+    renderStep();
+  }
+
+  document.querySelectorAll(".lang-toggle button").forEach(function (btn) {
+    btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+  });
+  document.getElementById("nextBtn").addEventListener("click", goNext);
+  document.getElementById("backBtn").addEventListener("click", goBack);
+
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
+    document.getElementById("configWarning").hidden = false;
+  }
+
+  setLang("en");
+})();
+</script>
+</body>
+</html>
