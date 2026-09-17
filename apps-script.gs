@@ -11,8 +11,8 @@ var SHEET_NAME = "Responses";
 
 var COLUMNS = [
   "timestamp", "language", "role", "city", "cityOther", "scope4wheeler",
-  "difficulty", "story", "location", "cause", "actions", "actionsOther",
-  "timeLostMinutes", "helped", "repeatOccurrence", "more", "followupOk", "contact"
+  "difficulty", "whatHappened", "whatHappenedOther", "location", "actions", "actionsOther",
+  "timeRange", "helped", "helpedOther", "repeatOccurrence", "more", "followupOk", "contact"
 ];
 
 function doPost(e) {
