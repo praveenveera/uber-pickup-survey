@@ -4,26 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pickup Story — Hyderabad</title>
-<meta name="description" content="Independent student research survey about Uber pickup experiences in Hyderabad.">
+<meta name="description" content="Praveen Veera's academic research survey about Uber pickup experiences in Hyderabad.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Hind:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root {
     /* Deliberately a single, fixed light theme — this app is used by an
        older, mixed-literacy audience on unpredictable phones; a
        consistent, high-contrast light surface beats matching device
-       dark-mode settings that vary per visitor. */
-    --ink: #1B2130;
-    --paper: #F6F5F1;
+       dark-mode settings that vary per visitor. An 80s-arcade pixel
+       palette: bright paper (not moody neon-dark, for legibility),
+       thick ink-black outlines, hot-magenta + cyan retro accents. */
+    --ink: #1A1A2E;
+    --paper: #FAFAFF;
     --paper-raised: #FFFFFF;
-    --line: #C9C5BA;
-    --muted: #52565F;
-    --accent: #C97A1A;
-    --accent-ink: #4A2F0A;
-    --success: #3F7A5C;
-    --danger: #B4432F;
-    --radius: 14px;
+    --line: #1A1A2E;
+    --muted: #4A4A68;
+    --accent: #FF6B00;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #FFE2C7;
+    --teal: #00B8D4;
+    --teal-soft: #D6F7FC;
+    --yellow: #FFD400;
+    --success: #00C853;
+    --danger: #FF3860;
+    --radius: 0px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -47,19 +53,21 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: 12px;
   }
-  .brand { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.01em; }
+  .brand { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; letter-spacing: 0.01em; }
   .lang-toggle { display: flex; gap: 8px; }
   .lang-toggle button {
-    border: 1.5px solid var(--line);
+    border: 2.5px solid var(--ink);
     background: var(--paper-raised);
     color: var(--ink);
-    border-radius: 999px;
+    border-radius: 0;
     padding: 8px 14px;
     font-size: 0.92rem;
     font-weight: 700;
     cursor: pointer;
     min-width: 44px;
+    box-shadow: 3px 3px 0 var(--ink);
   }
+  .lang-toggle button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
   .lang-toggle button[aria-pressed="true"] {
     background: var(--accent);
     border-color: var(--accent);
@@ -96,10 +104,18 @@
     margin-bottom: 10px;
   }
   h1.step-title {
+    /* Kept in the readable script fonts, not the pixel display face:
+       this text is translated into Telugu/Hindi (which the pixel font
+       can't render at all) and is real question content, not chrome —
+       forcing it blocky would hurt legibility exactly where it matters
+       most. The retro identity comes through shape/color/icons instead. */
     font-size: 1.45rem;
     line-height: 1.35;
     margin: 0 0 8px;
     text-wrap: balance;
+    border-bottom: 4px solid var(--accent);
+    display: inline-block;
+    padding-bottom: 4px;
   }
   .step-hint {
     color: var(--muted);
@@ -110,40 +126,40 @@
   .options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; }
   .option-card {
     display: flex; align-items: center; gap: 14px;
-    border: 1.5px solid var(--line);
+    border: 3px solid var(--ink);
     background: var(--paper-raised);
-    border-radius: var(--radius);
+    border-radius: 0;
     padding: 18px 20px;
     cursor: pointer;
     font-size: 1.08rem;
     line-height: 1.45;
     min-height: 44px;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
   }
-  .option-card:active { transform: scale(0.99); }
+  .option-card:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
   .option-card.selected {
-    border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 14%, var(--paper-raised));
+    background: var(--accent-soft);
   }
   .option-card .box {
     width: 26px; height: 26px; flex: 0 0 26px;
-    border: 2px solid var(--muted);
-    border-radius: 7px;
+    border: 3px solid var(--ink);
+    border-radius: 0;
     display: flex; align-items: center; justify-content: center;
-    color: var(--accent-ink);
+    color: var(--ink);
     font-size: 16px;
     font-weight: 700;
     background: var(--paper-raised);
   }
-  .option-card.radio .box { border-radius: 999px; }
-  .option-card.selected .box { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .option-card.selected .box { background: var(--accent); color: #fff; }
+  .option-icon { font-size: 1.3rem; line-height: 1; flex: 0 0 auto; }
 
   textarea, input[type="text"] {
     width: 100%;
-    border: 1.5px solid var(--line);
+    border: 3px solid var(--ink);
     background: var(--paper-raised);
     color: var(--ink);
-    border-radius: var(--radius);
+    border-radius: 0;
     padding: 14px 16px;
     font-size: 1.08rem;
     font-family: inherit;
@@ -163,15 +179,17 @@
     right: 10px;
     bottom: 10px;
     width: 46px; height: 46px;
-    border-radius: 999px;
-    border: 1.5px solid var(--line);
-    background: var(--paper-raised);
+    border-radius: 0;
+    border: 3px solid var(--ink);
+    background: var(--teal-soft);
     color: var(--ink);
     font-size: 20px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     padding: 0;
+    box-shadow: 3px 3px 0 var(--ink);
   }
+  .mic-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
   .mic-btn.listening {
     background: var(--danger);
     border-color: var(--danger);
@@ -197,24 +215,42 @@
   .navbar-inner { width: 100%; max-width: 460px; display: flex; gap: 10px; }
   button.nav-btn {
     flex: 1;
-    border-radius: 999px;
+    border-radius: 0;
     padding: 17px 22px;
     font-size: 1.12rem;
     font-weight: 700;
     cursor: pointer;
-    border: 1.5px solid transparent;
+    border: 3px solid var(--ink);
     min-height: 44px;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
   }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); flex: 0 0 auto; padding: 17px 22px; }
-  button.nav-btn:disabled { opacity: 0.5; cursor: default; }
+  button.nav-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-secondary { background: var(--paper-raised); color: var(--ink); flex: 0 0 auto; padding: 17px 22px; }
+  button.nav-btn:disabled { opacity: 0.6; cursor: default; }
 
-  .welcome-block { background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 20px; font-size: 1.02rem; color: var(--ink); line-height: 1.6; }
+  .welcome-block { background: var(--teal-soft); border: 3px solid var(--ink); border-radius: 0; padding: 18px; margin-bottom: 20px; font-size: 1.02rem; color: var(--ink); line-height: 1.6; }
+  .welcome-badge { display: block; width: fit-content; margin: 0 auto 18px; }
 
-  .thankyou { text-align: center; padding-top: 40px; }
-  .thankyou .icon { font-size: 2.6rem; margin-bottom: 12px; }
-  .thankyou h1 { font-size: 1.55rem; margin-bottom: 10px; }
-  .thankyou p { color: var(--ink); font-size: 1.05rem; line-height: 1.55; }
+  .pixel-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--teal-soft);
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    padding: 14px;
+  }
+
+  .thankyou { text-align: center; padding-top: 24px; }
+  .thankyou .badge { margin: 0 auto 16px; }
+  .thankyou h1 { font-size: 1.6rem; margin-bottom: 10px; }
+  .thankyou p { color: var(--ink); font-size: 1.05rem; line-height: 1.55; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(70px) rotate(200deg); opacity: 0; }
+  }
+  .confetti-dot { animation: confetti-fall 1.4s ease-out forwards; }
 
   .config-warning {
     background: var(--danger);
@@ -233,19 +269,29 @@
     padding: 32px 20px;
   }
   .lang-gate-inner { width: 100%; max-width: 460px; margin: 0 auto; }
-  .lang-gate-brand { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+  .lang-gate-hero { display: block; margin: 0 auto 20px; }
+  .lang-gate-brand { font-family: 'Press Start 2P', cursive; font-size: 1.05rem; line-height: 1.7; margin-bottom: 10px; }
+  .lang-gate-byline { color: var(--muted); font-size: 0.95rem; margin: 0 0 18px; font-style: italic; }
   .lang-gate-heading { color: var(--muted); font-size: 1.1rem; margin: 0 0 4px; line-height: 1.5; }
   .lang-gate-options { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
   .lang-gate-card {
     display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-    border: 2px solid var(--line);
+    border: 3px solid var(--ink);
     background: var(--paper-raised);
-    border-radius: var(--radius);
+    border-radius: 0;
     padding: 22px 24px;
     cursor: pointer;
     min-height: 44px;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
   }
-  .lang-gate-card:active { transform: scale(0.99); }
+  .lang-gate-card:nth-child(1) { border-color: var(--accent); box-shadow: 5px 5px 0 var(--accent); }
+  .lang-gate-card:nth-child(2) { border-color: var(--teal); box-shadow: 5px 5px 0 var(--teal); }
+  .lang-gate-card:nth-child(3) { border-color: var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .lang-gate-card:active { transform: translate(4px, 4px); }
+  .lang-gate-card:nth-child(1):active { box-shadow: 1px 1px 0 var(--accent); }
+  .lang-gate-card:nth-child(2):active { box-shadow: 1px 1px 0 var(--teal); }
+  .lang-gate-card:nth-child(3):active { box-shadow: 1px 1px 0 var(--ink); }
   .lang-gate-native { font-size: 1.6rem; font-weight: 700; color: var(--ink); }
   .lang-gate-sub { font-size: 1rem; color: var(--muted); }
 
@@ -298,8 +344,8 @@
     en: {
       brand: "Pickup Story",
       welcomeTitle: "Your Uber pickup experience",
-      welcomeBody: "This is an independent student product-management research project. It is not run by or affiliated with Uber. It asks about your real experience finding your driver or rider after a booking is confirmed. Takes about 5 minutes. Your answers are anonymous unless you choose to leave contact details at the end.",
-      consentLabel: "I agree that my anonymous answers may be used as research quotes in this student project. My name will not be published.",
+      welcomeBody: "This is Praveen Veera's academic assignment for a product management course — not run by or affiliated with Uber. Your answers will help Praveen solve a real assignment problem: understanding why finding your driver or rider after a booking can be confusing. Takes about 5 minutes. Your answers are anonymous unless you choose to leave contact details at the end.",
+      consentLabel: "I agree that my anonymous answers may be used as research quotes in Praveen's academic assignment. My name will not be published.",
       roleTitle: "Are you answering as a...",
       roleRider: "Rider — someone who books rides",
       roleDriver: "Driver — someone who drives for Uber/Ola",
@@ -366,8 +412,8 @@
     te: {
       brand: "పికప్ కథ",
       welcomeTitle: "మీ ఉబర్ పికప్ అనుభవం",
-      welcomeBody: "ఇది స్వతంత్ర విద్యార్థి ప్రొడక్ట్ మేనేజ్‌మెంట్ పరిశోధన ప్రాజెక్ట్. ఇది ఉబర్ ద్వారా నిర్వహించబడదు లేదా దానితో సంబంధం కలిగి ఉండదు. బుకింగ్ నిర్ధారించిన తర్వాత మీ డ్రైవర్‌ను లేదా రైడర్‌ను కనుక్కోవడంలో మీ నిజమైన అనుభవం గురించి ఇది అడుగుతుంది. దాదాపు 5 నిమిషాలు పడుతుంది. చివర్లో కాంటాక్ట్ వివరాలు ఇవ్వకపోతే, మీ సమాధానాలు అనామకంగా ఉంటాయి.",
-      consentLabel: "నా అనామక సమాధానాలను ఈ విద్యార్థి ప్రాజెక్ట్‌లో పరిశోధన కోట్‌లుగా ఉపయోగించవచ్చని నేను అంగీకరిస్తున్నాను. నా పేరు ప్రచురించబడదు.",
+      welcomeBody: "ఇది ప్రొడక్ట్ మేనేజ్‌మెంట్ కోర్సు కోసం ప్రవీణ్ వీర యొక్క అకడమిక్ అసైన్‌మెంట్ — ఇది ఉబర్ ద్వారా నిర్వహించబడదు లేదా దానితో సంబంధం కలిగి ఉండదు. బుకింగ్ తర్వాత మీ డ్రైవర్‌ను లేదా రైడర్‌ను కనుక్కోవడం ఎందుకు గందరగోళంగా ఉంటుందో అర్థం చేసుకోవడంలో మీ సమాధానాలు ప్రవీణ్‌కు ఈ అసైన్‌మెంట్ సమస్యను పరిష్కరించడంలో సహాయపడతాయి. దాదాపు 5 నిమిషాలు పడుతుంది. చివర్లో కాంటాక్ట్ వివరాలు ఇవ్వకపోతే, మీ సమాధానాలు అనామకంగా ఉంటాయి.",
+      consentLabel: "నా అనామక సమాధానాలను ప్రవీణ్ యొక్క అకడమిక్ అసైన్‌మెంట్‌లో పరిశోధన కోట్‌లుగా ఉపయోగించవచ్చని నేను అంగీకరిస్తున్నాను. నా పేరు ప్రచురించబడదు.",
       roleTitle: "మీరు దేని కోసం సమాధానం ఇస్తున్నారు...",
       roleRider: "రైడర్ — రైడ్ బుక్ చేసుకునే వ్యక్తి",
       roleDriver: "డ్రైవర్ — ఉబర్/ఓలా కోసం నడిపే వ్యక్తి",
@@ -434,8 +480,8 @@
     hi: {
       brand: "पिकअप कहानी",
       welcomeTitle: "आपका उबर पिकअप अनुभव",
-      welcomeBody: "यह एक स्वतंत्र छात्र प्रोडक्ट मैनेजमेंट शोध प्रोजेक्ट है। यह उबर द्वारा संचालित या उससे संबद्ध नहीं है। यह बुकिंग कन्फर्म होने के बाद अपने ड्राइवर या राइडर को ढूंढने के आपके असली अनुभव के बारे में पूछता है। इसमें लगभग 5 मिनट लगेंगे। अंत में संपर्क जानकारी न देने पर आपके जवाब गुमनाम रहेंगे।",
-      consentLabel: "मैं सहमत हूं कि मेरे गुमनाम जवाबों का उपयोग इस छात्र प्रोजेक्ट में रिसर्च कोट के रूप में किया जा सकता है। मेरा नाम प्रकाशित नहीं किया जाएगा।",
+      welcomeBody: "यह प्रोडक्ट मैनेजमेंट कोर्स के लिए प्रवीण वीरा का अकादमिक असाइनमेंट है — यह उबर द्वारा संचालित या उससे संबद्ध नहीं है। बुकिंग के बाद अपने ड्राइवर या राइडर को ढूंढना क्यों उलझन भरा हो सकता है, यह समझने में आपके जवाब प्रवीण को इस असाइनमेंट की समस्या हल करने में मदद करेंगे। इसमें लगभग 5 मिनट लगेंगे। अंत में संपर्क जानकारी न देने पर आपके जवाब गुमनाम रहेंगे।",
+      consentLabel: "मैं सहमत हूं कि मेरे गुमनाम जवाबों का उपयोग प्रवीण के अकादमिक असाइनमेंट में रिसर्च कोट के रूप में किया जा सकता है। मेरा नाम प्रकाशित नहीं किया जाएगा।",
       roleTitle: "आप किसकी तरफ से जवाब दे रहे हैं...",
       roleRider: "राइडर — जो राइड बुक करता है",
       roleDriver: "ड्राइवर — जो उबर/ओला चलाता है",
@@ -536,7 +582,9 @@
     card.innerHTML = "";
     var page = el("div", { class: "lang-gate-page" });
     var inner = el("div", { class: "lang-gate-inner" });
+    inner.appendChild(svgWrap(HERO_ILLUSTRATION, "lang-gate-hero"));
     inner.appendChild(el("div", { class: "lang-gate-brand", text: "Pickup Story · పికప్ కథ · पिकअप कहानी" }));
+    inner.appendChild(el("p", { class: "lang-gate-byline", text: "by Praveen Veera · ప్రవీణ్ వీర ద్వారా · प्रवीण वीरा द्वारा" }));
     inner.appendChild(el("p", { class: "lang-gate-heading", text: "Choose your language" }));
     inner.appendChild(el("p", { class: "lang-gate-heading", text: "మీ భాషను ఎంచుకోండి" }));
     inner.appendChild(el("p", { class: "lang-gate-heading", text: "अपनी भाषा चुनें" }));
@@ -651,16 +699,68 @@
     return node;
   }
 
-  function optionCard(kind, selected, label, onClick) {
+  function svgWrap(markup, className) {
+    var wrap = document.createElement("div");
+    if (className) wrap.className = className;
+    wrap.innerHTML = markup;
+    return wrap;
+  }
+
+  // ---- hand-built pixel-art icons: a grid of characters, one per "pixel",
+  // rendered as crisp-edged <rect> blocks — genuine 8-bit sprites rather
+  // than smooth vector illustrations, matching the retro-arcade theme. ----
+  function pixelIcon(grid, unit, colors) {
+    var rows = grid.length, cols = grid[0].length, rects = "";
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var ch = grid[r].charAt(c);
+        if (ch === ".") continue;
+        rects += '<rect x="' + (c * unit) + '" y="' + (r * unit) + '" width="' + unit + '" height="' + unit + '" fill="' + (colors[ch] || "#000") + '"/>';
+      }
+    }
+    return '<svg viewBox="0 0 ' + (cols * unit) + ' ' + (rows * unit) + '" width="' + (cols * unit) + '" height="' + (rows * unit) + '" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="presentation">' + rects + "</svg>";
+  }
+
+  var CAR_GRID = ["..BBBBBB..", ".BBBBBBBB.", "BBBBBBBBBB", "BBWWBBWWBB", ".K......K.", ".K......K."];
+  var PIN_GRID = ["..TTT..", ".TTTTT.", "TTTTTTT", "TTTWWTT", "TTTWWTT", ".TTTTT.", "..TTT..", "...T..."];
+  var CHECK_GRID = ["......X", ".....X.", "X...X..", ".X.X...", "..X...."];
+
+  var CAR_ICON = pixelIcon(CAR_GRID, 8, { B: "var(--accent)", W: "var(--paper)", K: "var(--ink)" });
+  var PIN_ICON = pixelIcon(PIN_GRID, 8, { T: "var(--teal)", W: "var(--paper-raised)" });
+  var PIN_ICON_SMALL = pixelIcon(PIN_GRID, 6, { T: "var(--accent)", W: "var(--paper-raised)" });
+  var CHECK_ICON = pixelIcon(CHECK_GRID, 11, { X: "var(--teal)" });
+
+  var HERO_ILLUSTRATION =
+    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;">' +
+    CAR_ICON +
+    '<div style="flex:1;max-width:44px;border-top:4px dashed var(--teal);margin-top:22px;"></div>' +
+    PIN_ICON +
+    "</div>";
+
+  var WELCOME_BADGE = '<div class="pixel-badge">' + PIN_ICON_SMALL + "</div>";
+
+  var THANKYOU_BADGE =
+    '<div style="position:relative;display:inline-block;">' +
+    '<div class="pixel-badge">' + CHECK_ICON + "</div>" +
+    '<span class="confetti-dot" style="position:absolute;top:-10px;left:-16px;width:10px;height:10px;background:var(--accent);animation-delay:0s;"></span>' +
+    '<span class="confetti-dot" style="position:absolute;top:-14px;right:-16px;width:12px;height:12px;background:var(--teal);animation-delay:0.15s;"></span>' +
+    '<span class="confetti-dot" style="position:absolute;bottom:-10px;left:-18px;width:8px;height:8px;background:var(--yellow);animation-delay:0.3s;"></span>' +
+    '<span class="confetti-dot" style="position:absolute;bottom:-12px;right:-14px;width:10px;height:10px;background:var(--accent);animation-delay:0.2s;"></span>' +
+    "</div>";
+
+  var ROLE_ICONS = { rider: "🙋", driver: "🚗" };
+  var LOCATION_ICONS = ["✈️", "🛍️", "🏢", "🚉", "🏥", "🏨", "🚦", "🏘️", "📍"];
+
+  function optionCard(kind, selected, label, onClick, icon) {
+    var children = [el("span", { class: "box", text: selected ? "✓" : "" })];
+    if (icon) children.push(el("span", { class: "option-icon", text: icon }));
+    children.push(el("span", { text: label }));
     var card = el("div", {
       class: "option-card " + kind + (selected ? " selected" : ""),
       tabindex: "0",
       role: kind === "radio" ? "radio" : "checkbox",
       "aria-checked": selected ? "true" : "false"
-    }, [
-      el("span", { class: "box", text: selected ? "✓" : "" }),
-      el("span", { text: label })
-    ]);
+    }, children);
     card.addEventListener("click", onClick);
     card.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); }
@@ -681,6 +781,7 @@
 
     switch (id) {
       case "welcome": {
+        card.appendChild(svgWrap(WELCOME_BADGE, "welcome-badge"));
         card.appendChild(el("div", { class: "eyebrow", text: "1 / " + visibleSteps().length }));
         card.appendChild(el("h1", { class: "step-title", text: t("welcomeTitle") }));
         card.appendChild(el("div", { class: "welcome-block", text: t("welcomeBody") }));
@@ -695,8 +796,8 @@
         title = t("roleTitle");
         card.appendChild(stepHeader(title));
         var opts = el("div", { class: "options" }, [
-          optionCard("radio", state.answers.role === "rider", t("roleRider"), function () { state.answers.role = "rider"; renderStep(); }),
-          optionCard("radio", state.answers.role === "driver", t("roleDriver"), function () { state.answers.role = "driver"; renderStep(); })
+          optionCard("radio", state.answers.role === "rider", t("roleRider"), function () { state.answers.role = "rider"; renderStep(); }, ROLE_ICONS.rider),
+          optionCard("radio", state.answers.role === "driver", t("roleDriver"), function () { state.answers.role = "driver"; renderStep(); }, ROLE_ICONS.driver)
         ]);
         card.appendChild(opts);
         break;
@@ -759,7 +860,7 @@
         var locOpts = el("div", { class: "options" });
         LOCATIONS.forEach(function (key, i) {
           var lid = LOCATION_IDS[i];
-          locOpts.appendChild(optionCard("radio", state.answers.location === lid, t(key), function () { state.answers.location = lid; renderStep(); }));
+          locOpts.appendChild(optionCard("radio", state.answers.location === lid, t(key), function () { state.answers.location = lid; renderStep(); }, LOCATION_ICONS[i]));
         });
         card.appendChild(locOpts);
         break;
@@ -888,11 +989,12 @@
     document.getElementById("progressFill").style.width = "100%";
     var card = document.getElementById("card");
     card.innerHTML = "";
-    card.appendChild(el("div", { class: "thankyou" }, [
-      el("div", { class: "icon", text: "🙏" }),
+    var thankyou = el("div", { class: "thankyou" }, [
       el("h1", { text: t("thankyouTitle") }),
       el("p", { text: t("thankyouBody") })
-    ]));
+    ]);
+    thankyou.insertBefore(svgWrap(THANKYOU_BADGE, "badge"), thankyou.firstChild);
+    card.appendChild(thankyou);
   }
 
   function updateProgress() {
