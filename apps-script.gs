@@ -13,7 +13,8 @@ var COLUMNS = [
   "timestamp", "language", "role", "city", "cityOther", "scope4wheeler",
   "difficulty", "mainStory", "confusionStart", "actionsReasoning", "frustration",
   "whatHappened", "whatHappenedOther", "location", "locationOther", "actions", "actionsOther",
-  "timeRange", "helped", "helpedOther", "repeatOccurrence", "more", "followupOk", "contact"
+  "timeRange", "helped", "helpedOther", "repeatOccurrence", "more", "followupOk", "contact",
+  "rawJson"
 ];
 
 function doPost(e) {
@@ -23,6 +24,13 @@ function doPost(e) {
     var sheet = getOrCreateSheet();
     var data = JSON.parse(e.postData.contents);
     var row = COLUMNS.map(function (key) {
+      // Safety net: always keep the complete raw submission in its own
+      // column, in addition to the named fields above. The webapp's
+      // question set (and therefore this column list) may change again
+      // in the future; if it drifts out of sync with whatever code is
+      // actually deployed here, rawJson still has everything and nothing
+      // gets silently dropped the way it did before this was added.
+      if (key === "rawJson") return e.postData.contents;
       var value = data[key];
       return value === undefined || value === null ? "" : value;
     });
