@@ -11,7 +11,7 @@ var SHEET_NAME = "Responses";
 
 var COLUMNS = [
   "timestamp", "language", "role", "city", "cityOther", "scope4wheeler",
-  "difficulty", "whatHappened", "whatHappenedOther", "location", "actions", "actionsOther",
+  "difficulty", "whatHappened", "whatHappenedOther", "location", "locationOther", "actions", "actionsOther",
   "timeRange", "helped", "helpedOther", "repeatOccurrence", "more", "followupOk", "contact"
 ];
 

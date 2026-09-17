@@ -375,7 +375,7 @@
       whD_circle: "Had to circle around or wait a long time",
       whD_cancelled: "Ride got cancelled",
       whOther: "Something else",
-      locationTitle: "Where were you?",
+      locationTitle: "Where were you? (choose all that apply)",
       locAirport: "Airport", locMall: "Shopping mall", locOffice: "Office or tech campus",
       locStation: "Metro or railway station", locHospital: "Hospital", locHotel: "Hotel or event venue",
       locStreet: "Busy street", locResidential: "Residential complex / gated community", locOther: "Other",
@@ -443,7 +443,7 @@
       whD_circle: "చుట్టూ తిరగాల్సి వచ్చింది లేదా చాలాసేపు వేచి ఉండాల్సి వచ్చింది",
       whD_cancelled: "రైడ్ క్యాన్సిల్ అయింది",
       whOther: "ఇంకేదో",
-      locationTitle: "మీరు ఎక్కడ ఉన్నారు?",
+      locationTitle: "మీరు ఎక్కడ ఉన్నారు? (వర్తించే అన్నింటినీ ఎంచుకోండి)",
       locAirport: "విమానాశ్రయం", locMall: "షాపింగ్ మాల్", locOffice: "ఆఫీస్ లేదా టెక్ క్యాంపస్",
       locStation: "మెట్రో లేదా రైల్వే స్టేషన్", locHospital: "ఆసుపత్రి", locHotel: "హోటల్ లేదా ఈవెంట్ వేదిక",
       locStreet: "రద్దీ రోడ్డు", locResidential: "నివాస సముదాయం / గేటెడ్ కమ్యూనిటీ", locOther: "ఇతర",
@@ -511,7 +511,7 @@
       whD_circle: "आसपास चक्कर लगाना पड़ा या काफी देर इंतज़ार करना पड़ा",
       whD_cancelled: "राइड कैंसिल हो गई",
       whOther: "कुछ और",
-      locationTitle: "आप कहां थे?",
+      locationTitle: "आप कहां थे? (जो लागू हो वह चुनें)",
       locAirport: "हवाई अड्डा", locMall: "शॉपिंग मॉल", locOffice: "ऑफिस या टेक कैंपस",
       locStation: "मेट्रो या रेलवे स्टेशन", locHospital: "अस्पताल", locHotel: "होटल या इवेंट वेन्यू",
       locStreet: "व्यस्त सड़क", locResidential: "रिहायशी परिसर / गेटेड कम्युनिटी", locOther: "अन्य",
@@ -858,11 +858,23 @@
       case "location": {
         card.appendChild(stepHeader(t("locationTitle")));
         var locOpts = el("div", { class: "options" });
+        if (!state.answers.location) state.answers.location = [];
         LOCATIONS.forEach(function (key, i) {
           var lid = LOCATION_IDS[i];
-          locOpts.appendChild(optionCard("radio", state.answers.location === lid, t(key), function () { state.answers.location = lid; renderStep(); }, LOCATION_ICONS[i]));
+          var selected = state.answers.location.indexOf(lid) !== -1;
+          locOpts.appendChild(optionCard("checkbox", selected, t(key), function () {
+            var idx = state.answers.location.indexOf(lid);
+            if (idx === -1) state.answers.location.push(lid); else state.answers.location.splice(idx, 1);
+            renderStep();
+          }, LOCATION_ICONS[i]));
         });
         card.appendChild(locOpts);
+        if (state.answers.location.indexOf("other") !== -1) {
+          var locOtherInput = el("input", { type: "text", placeholder: t("actionsOtherPlaceholder"), class: "other-field" });
+          locOtherInput.value = state.answers.locationOther || "";
+          locOtherInput.addEventListener("input", function (e) { state.answers.locationOther = e.target.value; });
+          card.appendChild(locOtherInput);
+        }
         break;
       }
       case "actions": {
@@ -1021,7 +1033,7 @@
       case "scope": return !!a.scope;
       case "difficulty": return !!a.difficulty;
       case "whatHappened": return a.whatHappened && a.whatHappened.length > 0;
-      case "location": return !!a.location;
+      case "location": return a.location && a.location.length > 0;
       case "actions": return a.actions && a.actions.length > 0;
       case "time": return !!a.timeRange;
       case "helped": return a.helped && a.helped.length > 0;
@@ -1077,7 +1089,8 @@
       difficulty: state.answers.difficulty || "",
       whatHappened: (state.answers.whatHappened || []).join(", "),
       whatHappenedOther: state.answers.whatHappenedOther || "",
-      location: state.answers.location || "",
+      location: (state.answers.location || []).join(", "),
+      locationOther: state.answers.locationOther || "",
       actions: (state.answers.actions || []).join(", "),
       actionsOther: state.answers.actionsOther || "",
       timeRange: state.answers.timeRange || "",
