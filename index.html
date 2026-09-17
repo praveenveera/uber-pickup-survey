@@ -854,23 +854,23 @@
       }
       case "mainStory": {
         var mainStoryTitle = isRider() ? t("mainStoryTitleRider") : t("mainStoryTitleDriver");
-        card.appendChild(stepHeader(mainStoryTitle));
+        card.appendChild(stepHeader(mainStoryTitle, t("moreHint")));
         card.appendChild(textArea("mainStory", t("openTextPlaceholder")));
         break;
       }
       case "confusionStart": {
-        card.appendChild(stepHeader(t("confusionStartTitle")));
+        card.appendChild(stepHeader(t("confusionStartTitle"), t("moreHint")));
         card.appendChild(textArea("confusionStart", t("openTextPlaceholder")));
         break;
       }
       case "actionsReasoning": {
         var actionsReasoningTitle = isRider() ? t("actionsReasoningTitleRider") : t("actionsReasoningTitleDriver");
-        card.appendChild(stepHeader(actionsReasoningTitle));
+        card.appendChild(stepHeader(actionsReasoningTitle, t("moreHint")));
         card.appendChild(textArea("actionsReasoning", t("openTextPlaceholder")));
         break;
       }
       case "frustration": {
-        card.appendChild(stepHeader(t("frustrationTitle")));
+        card.appendChild(stepHeader(t("frustrationTitle"), t("moreHint")));
         card.appendChild(textArea("frustration", t("openTextPlaceholder")));
         break;
       }
@@ -1028,7 +1028,7 @@
   function textArea(field, placeholder) {
     var ta = el("textarea", { placeholder: placeholder });
     ta.value = state.answers[field] || "";
-    ta.addEventListener("input", function (e) { state.answers[field] = e.target.value; });
+    ta.addEventListener("input", function (e) { state.answers[field] = e.target.value; clearError(); });
 
     var wrap = el("div", { class: "textarea-wrap" }, [ta]);
     attachMic(wrap, ta, field);
@@ -1075,10 +1075,10 @@
       case "city": return !!a.city;
       case "scope": return !!a.scope;
       case "difficulty": return !!a.difficulty;
-      case "mainStory": return !!(a.mainStory && a.mainStory.trim());
-      case "confusionStart": return !!(a.confusionStart && a.confusionStart.trim());
-      case "actionsReasoning": return !!(a.actionsReasoning && a.actionsReasoning.trim());
-      case "frustration": return !!(a.frustration && a.frustration.trim());
+      case "mainStory": return true;
+      case "confusionStart": return true;
+      case "actionsReasoning": return true;
+      case "frustration": return true;
       case "whatHappened": return a.whatHappened && a.whatHappened.length > 0;
       case "location": return a.location && a.location.length > 0;
       case "actions": return a.actions && a.actions.length > 0;
